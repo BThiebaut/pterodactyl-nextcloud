@@ -1,0 +1,20 @@
+FROM nextcloud:latest
+
+# Create Pterodactyl container home
+RUN mkdir -p /home/container
+
+# Move Nextcloud installation into /home/container
+RUN mv /var/www/html /home/container/html
+
+# Create symlink for apache
+RUN ln -s /home/container/html /var/www/html
+
+# Fix apache rights
+RUN chown -R www-data:www-data /home/container/html
+
+# set working dir
+WORKDIR /home/container
+
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["apache2-foreground"]
