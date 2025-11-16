@@ -1,28 +1,33 @@
-FROM nextcloud:latest
+FROM nextcloud:fpm
 
-# Move Nextcloud to Pterodactyl directory
-RUN mkdir -p /home/container && \
-    mv /var/www/html /home/container/html && \
-    ln -s /home/container/html /var/www/html
+# Install nginx + supervisor
+RUN apt-get update && apt-get install -y \
+    nginx \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
 
-# Create ptero group & add Apache
-RUN groupadd -g 988 pterogroup && \
-    usermod -aG pterogroup www-data
-
-# Fix file permissions for Pterodactyl runtime user
-RUN chown -R 988:988 /home/container/html && \
-    chmod -R g+rwX /home/container/html
-
-# Create writable apache run directory
-RUN mkdir -p /home/container/apache-run && \
-    chown -R 988:988 /home/container/apache-run
-
-# Override Apache PIDFile 
-RUN echo "PidFile /home/container/apache-run/apache2.pid" > /etc/apache2/conf-available/pteropid.conf && \
-    echo "Mutex file" >> /etc/apache2/conf-available/pteropid.conf && \
-    a2enconf pteropid
-
+# Create container working directory
+RUN mkdir -p /home/container
 WORKDIR /home/container
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["apache2-foreground"]
+# Move nextcloud files into /home/container/html
+RUN mv /var/www/html /home/container/html && \
+    ln -s /home/container/html /var/www/html
+
+
+# Pterodactyl runs container as UID 988
+RUN chown -R 988:988 /home/container/html
+
+
+RUN rm -f /etc/nginx/sites-enabled/default
+
+# Nextcloud Nginx configuration
+RUN mkdir -p /etc/nginx/sites-enabled
+
+COPY nginx.conf /etc/nginx/sites-enabled/nextcloud.conf
+
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
+EXPOSE 9000
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
