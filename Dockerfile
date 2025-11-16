@@ -19,3 +19,4 @@ WORKDIR /home/container
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
+
