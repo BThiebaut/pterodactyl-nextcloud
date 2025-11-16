@@ -1,22 +1,22 @@
 FROM nextcloud:latest
 
-# Create Pterodactyl container home
+# Home container
 RUN mkdir -p /home/container
 
-# Move Nextcloud installation into /home/container
-RUN mv /var/www/html /home/container/html
+# Link for nextcloud/pterodactyl behavior
+RUN mv /var/www/html /home/container/html && \
+    ln -s /home/container/html /var/www/html
 
-# pterodactyl as owner
-RUN chown -R 988:988 /home/container/html
+# group for ptero and apache
+RUN groupadd -g 988 pterogroup && \
+    usermod -aG pterogroup www-data
 
-# allow apache to use it too
-RUN chmod -R g+rwX /home/container/html && \
-    usermod -aG 988 www-data
+# UUID 988 should be pterodactyl usable group
+RUN chown -R 988:988 /home/container/html && \
+    chmod -R g+rwX /home/container/html
 
-# set working dir
+# Working directory for Pterodactyl
 WORKDIR /home/container
-
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["apache2-foreground"]
-
