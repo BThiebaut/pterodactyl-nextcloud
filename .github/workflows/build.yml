@@ -17,8 +17,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         
-      - name: Debug - list repo contents
-        run: ls -R .
+      - name: Debug - Show GitHub actor
+        run: echo "Pushing as ${{ github.actor }}"
+
+      - name: Debug - Verify Docker login user
+        run: cat ~/.docker/config.json
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
