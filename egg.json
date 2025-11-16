@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "version": "PTDL_v2",
+    "update_url": null
+  },
+  "name": "Nextcloud",
+  "author": "benjamin@thiebaut.me",
+  "description": "Nextcloud running inside a custom Docker image adapted for Pterodactyl.",
+  "docker_images": {
+    "Nextcloud Image": "ghcr.io/bthiebaut/pterodactyl-nextcloud:latest"
+  },
+  "startup": "apache2-foreground",
+  "config": {
+    "files": "{}",
+    "startup": "{ \"done\": \"Apache/Nextcloud running\" }",
+    "logs": "{}",
+    "stop": "^C",
+    "ext": "json"
+  },
+  "scripts": {
+    "installation": {
+      "script": "#!/bin/ash\necho \"Nextcloud image already contains everything.\"\nexit 0",
+      "container": "alpine:latest",
+      "entrypoint": "ash"
+    }
+  },
+  "variables": [
+    {
+      "name": "Admin Username",
+      "description": "Admin username for first-time setup.",
+      "env_variable": "NEXTCLOUD_ADMIN_USER",
+      "default_value": "admin",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    },
+    {
+      "name": "Admin Password",
+      "description": "Admin password for first-time setup.",
+      "env_variable": "NEXTCLOUD_ADMIN_PASSWORD",
+      "default_value": "password",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    },
+    {
+      "name": "Trusted Domains",
+      "description": "Domains allowed to access this Nextcloud instance.",
+      "env_variable": "NEXTCLOUD_TRUSTED_DOMAINS",
+      "default_value": "localhost",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "string"
+    },
+    {
+      "name": "Database Name",
+      "description": "MySQL database name.",
+      "env_variable": "MYSQL_DATABASE",
+      "default_value": "nextcloud",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    },
+    {
+      "name": "Database User",
+      "description": "MySQL user.",
+      "env_variable": "MYSQL_USER",
+      "default_value": "nextcloud",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    },
+    {
+      "name": "Database Password",
+      "description": "MySQL password.",
+      "env_variable": "MYSQL_PASSWORD",
+      "default_value": "password",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    },
+    {
+      "name": "Database Host",
+      "description": "MySQL host.",
+      "env_variable": "MYSQL_HOST",
+      "default_value": "mysql",
+      "user_viewable": true,
+      "user_editable": true,
+      "rules": "required|string"
+    }
+  ]
+}

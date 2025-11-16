@@ -6,11 +6,12 @@ RUN mkdir -p /home/container
 # Move Nextcloud installation into /home/container
 RUN mv /var/www/html /home/container/html
 
-# Create symlink for apache
-RUN ln -s /home/container/html /var/www/html
+# pterodactyl as owner
+RUN chown -R 988:988 /home/container/html
 
-# Fix apache rights
-RUN chown -R www-data:www-data /home/container/html
+# allow apache to use it too
+RUN chmod -R g+rwX /home/container/html && \
+    usermod -aG 988 www-data
 
 # set working dir
 WORKDIR /home/container
