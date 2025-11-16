@@ -19,8 +19,9 @@ RUN mkdir -p /home/container/apache-run && \
 
 # Override Apache PIDFile and mutex dirs
 RUN echo "PidFile /home/container/apache-run/apache2.pid" > /etc/apache2/conf-available/pteropid.conf && \
-    echo "Mutex file:/home/container/apache-run" >> /etc/apache2/conf-available/pteropid.conf && \
+    echo "Mutex file:/home/container/apache-run/" >> /etc/apache2/conf-available/pteropid.conf && \
     a2enconf pteropid
+
 
 WORKDIR /home/container
 
